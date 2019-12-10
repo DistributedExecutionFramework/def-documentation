@@ -1,0 +1,92 @@
+@startuml
+
+skinparam monochrome true
+'skinparam style strictuml
+'skinparam handwritten true
+'skinparam linetype polyline
+
+title Components - High level architecture
+
+
+cloud "Central Components" as central <<Private Cloud>> {
+    frame "DEF Module" as defmodule <<Container>> {
+        artifact Manager as m_manager <<Service>>
+        artifact WebApp as m_webapp <<Service>>
+        artifact Library as m_library <<Service>>
+        artifact CloudCommunication as m_cloudcomm <<Service>>
+    }
+    database "DEF MasterLibrary" as masterlibrary
+    database "DEF Archive" as archive
+    database "DEF Domain DB" as domaindb
+    m_manager ..> domaindb : use
+    m_manager ...> archive : use
+    m_webapp ..> domaindb : use
+    m_webapp ...> archive : use
+    m_library ...> masterlibrary : use
+    m_library ..> domaindb : use
+    m_cloudcomm -> distributed : "manage instances"
+    m_cloudcomm -up-> central : "manage instances"
+}
+
+cloud "Distributed Components" as distributed <<Private/Public Cloud>> {
+    frame "DEF ClusterModule" as cluster <<Container>> {
+        artifact Cluster as c_cluster <<Service>>
+        artifact "Task Scheduler" as c_task_scheduler <<Service>>
+        artifact "Reduce Scheduler" as c_reduce_scheduler <<Service>>
+        artifact Library as c_library <<Service>>
+        artifact CloudCommunication as c_cloudcomm <<Service>>
+    }
+    frame "DEF Worker" as worker <<Container>> {
+        artifact Library as w_library <<Service>>
+        artifact Worker as w_worker <<Service>>
+    }
+    frame "DEF Reducer" as reducer <<Container>> {
+        artifact Library as r_library <<Service>>
+        artifact Reducer as r_reducer <<Service>>
+    }
+    frame "DEF LoadBalancer" as loadbalancer <<Container>> {
+        artifact LoadBalancer as l_loadbalancer <<Service>>
+    }
+    frame "DEF Logger" as logger <<Container>> {
+    }
+    note left of logger : 3rd party,\ne.g. elasticsearch
+    database "DEF WorkingData" as workingdata
+    database "DEF SlaveLibrary" as slavelibrary
+    database "DEF LogData" as logdata
+    w_worker ...> workingdata : use
+    c_cluster ...> workingdata : use
+    c_library ...> slavelibrary : use
+    w_library ..> slavelibrary : use
+    logger ..> logdata : use
+    w_worker <--> l_loadbalancer : "load info &\nmove tasks"
+    c_task_scheduler <--> w_worker : "state info &\nschedule tasks"
+    c_reduce_scheduler <--> r_reducer : "state info &\nschedule tasks"
+    c_cluster <--> w_worker : "manage &\nstate info"
+    c_cluster <--> r_reducer : "manage &\nstate info"
+    w_library -up-> c_library : "fetch &\nupdate\nroutines"
+    r_library -up-> c_library : "fetch &\nupdate\nroutines"
+    cluster ~~> logger : log
+    worker ~~> logger : log
+    loadbalancer ~~> logger : log
+    distributed <-- c_cloudcomm : manage\ninstances
+}
+note top of distributed : all components represent one cluster
+
+
+actor "DEF Client" as defclient
+actor "Library Routine" as libraryroutine
+actor "Web Client" as webclient
+
+defclient ---> m_manager : "\n\naccess"
+libraryroutine ---> m_library : "\n\n\n\nStore &\nupdate routines"
+webclient ---> m_webapp : access
+
+m_manager -> c_cluster : "<back:white>delegate client-requests based on program/cluster</back>\n<back:white>manage cluster</back>"
+masterlibrary --> slavelibrary : "partitial copy\nsync routines"
+archive <-- workingdata : "store"
+
+
+m_library <-- c_library : "fetch & update routines"
+
+
+@enduml

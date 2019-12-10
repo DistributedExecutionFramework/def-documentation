@@ -1,0 +1,90 @@
+@startuml
+
+'skinparam linetype polyline
+
+node Client <<Client PC>> {
+    node PSE <<Problem Solving Env.>> {
+        artifact "client" as c_client
+    }
+    agent "WebBrowser" as c_browser
+}
+
+cloud "Own Datacenter" <<Private Cloud>> {
+	node master <<Linux Server>> {
+	    node "Java 8" as m_java <<Execution Environment>> {
+	        artifact "manager.jar " as manager
+	        artifact "library.jar " as m_library
+
+	        manager -> m_library : "TCP (Thrift)"
+	    }
+	}
+
+	node cluster1 <<Linux Server>> {
+	    node "Java 8" as c1_java <<Execution Environment>> {
+	        artifact "cluster.jar " as c1_cluster
+	        artifact "library.jar " as c1_library
+	        artifact "scheduler.jar " as c1_scheduler
+
+	        c1_cluster --> c1_library: "TCP (Thrift)"
+	        c1_cluster --> c1_scheduler: "TCP (Thrift)"
+	    }
+	}
+	node "worker1..n" as worker1 <<Linux Server>> {
+	    node "Java 8" as w1_java <<Execution Environment>> {
+	        artifact "worker.jar " as w1_worker
+	        artifact "library.jar " as w1_library
+
+	        w1_worker -> w1_library : "TCP (Thrift)"
+	    }
+	}
+}
+
+cloud "External Cloud Provider" <<Public Cloud>> {
+	node cluster2 <<Linux Server>> {
+	    node "Java 8" as c2_java <<Execution Environment>> {
+	        artifact "cluster.jar " as c2_cluster
+	        artifact "library.jar " as c2_library
+	        artifact "scheduler.jar " as c2_scheduler
+
+	        c2_cluster --> c2_library: "TCP (Thrift)"
+	        c2_cluster --> c2_scheduler: "TCP (Thrift)"
+	    }
+	}
+
+	node "worker2..m" as worker2 <<Linux Server>> {
+	    node "Java 8" as w2_java <<Execution Environment>> {
+	        artifact "worker.jar " as w2_worker
+	        artifact "library.jar " as w2_library
+
+	        w2_worker -> w2_library : "TCP (Thrift)"
+	    }
+	}
+}
+
+node dbserver <<DB Server>> {
+    node "MySQL" <<RDBMS>> {
+        database DEF as def
+    }
+}
+
+
+
+c_client --> manager : RESTful
+c_browser --> manager : HTTP
+
+manager -[#black]up-> def : SQL
+m_library -[#black]up-> def : SQL
+
+manager -[#black]-> c1_cluster : "TCP (Thrift)"
+manager -[#black]-> c2_cluster : "TCP (Thrift)"
+
+c1_cluster --[#black]-> w1_worker: "TCP (Thrift)"
+c2_cluster --[#black]-> w2_worker: "TCP (Thrift)"
+c1_scheduler --[#black]-> w1_worker: "TCP (Thrift)"
+c2_scheduler --[#black]-> w2_worker: "TCP (Thrift)"
+
+c1_library <--[#grey]- w1_library : "TCP (Thrift)"
+c2_library <--[#grey]- w2_library : "TCP (Thrift)"
+m_library <--[#grey]- c1_library : "TCP (Thrift)"
+m_library <--[#grey]- c2_library : "TCP (Thrift)"
+@enduml
