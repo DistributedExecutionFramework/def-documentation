@@ -1,0 +1,12 @@
+Machine shop
+Machine shop results after 52 weeks
+Machine 0 made 8516 parts.
+Machine 1 made 8516 parts.
+Machine 2 made 8510 parts.
+Machine 3 made 8498 parts.
+Machine 4 made 8552 parts.
+Machine 5 made 8490 parts.
+Machine 6 made 8519 parts.
+Machine 7 made 8527 parts.
+Machine 8 made 8538 parts.
+Machine 9 made 8486 parts.

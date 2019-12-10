@@ -1,0 +1,53 @@
+@startuml
+
+skinparam monochrome true
+'skinparam style strictuml
+'skinparam handwritten true
+'skinparam linetype polyline
+
+actor User
+component "Browser" as browser
+component "Client" as client
+
+package "Manager " as manager {
+    component "Manager" as m_manager <<Service>>
+    component "Library" as m_library <<Service>>
+    component "WebManager" as m_webmanager <<Website>>
+}
+
+package "Cluster " as cluster {
+    component "Cluster" as c_cluster <<Service>>
+    component "Scheduler" as c_scheduler <<Service>>
+    component "Library" as c_library <<Service>>
+}
+
+package "Node 1 "  as node1 {
+    component "Worker" as n1_worker <<Service>>
+    component "Library" as n1_library <<Service>>
+}
+
+package "Node 2 " as node2 {
+    component "Worker" as n2_worker <<Service>>
+    component "Library" as n2_library <<Service>>
+}
+
+package "Node n " as noden {
+    component "Reducer" as nn_reducer <<Service>>
+    component "Library" as nn_library <<Service>>
+}
+' --------------
+
+User -r-> client
+User -l-> browser
+
+browser --> m_webmanager
+client --> m_manager
+
+m_manager -> c_cluster : delegate
+
+c_scheduler --> n1_worker
+c_scheduler --> n2_worker
+c_scheduler --> nn_reducer
+
+
+@enduml

@@ -1,0 +1,64 @@
+@startuml
+
+skinparam componentStyle uml2
+skinparam monochrome true
+
+[Manager] as manager
+[Cluster] as cluster
+[Scheduler] as scheduler
+[Worker] <<Node>> as worker
+[Reducer] <<Node>> as reducer
+[Library] as library
+[WebManager] as webmanager
+[Client] as client
+
+interface ExecLogicService as mexec
+interface ExecLogicService as cexec
+interface ManagerService as managersrv
+interface ClusterService as clustersrv
+interface LibraryAdminService as libraryasrv
+interface LibraryService as librarysrv
+interface SchedulerService as schedulersrv
+interface NodeObserver as cnodeobsrv
+interface NodeObserver as snodeobsrv
+interface WorkerService as workersrv
+interface ReducerService as reducersrv
+
+manager --() mexec
+manager --() managersrv
+cluster --() cexec
+cluster --() clustersrv
+library -u-() librarysrv
+library --() libraryasrv
+cluster -u-() cnodeobsrv
+scheduler --() schedulersrv
+scheduler -u-() snodeobsrv
+worker --() workersrv
+reducer --() reducersrv
+
+mexec )-- webmanager
+managersrv )-- webmanager
+clustersrv )-- webmanager
+libraryasrv )-- webmanager
+
+mexec )-- client
+managersrv )-- client
+
+cexec )-- manager
+clustersrv )-- manager
+
+librarysrv )-- cluster
+schedulersrv )-- cluster
+workersrv )-- cluster
+reducersrv )-- cluster
+workersrv )-- scheduler
+reducersrv )-- scheduler
+
+cnodeobsrv )-- worker
+cnodeobsrv )-- reducer
+snodeobsrv )-- worker
+snodeobsrv )-- reducer
+librarysrv )-- worker
+librarysrv )-- reducer
+
+@enduml

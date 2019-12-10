@@ -1,0 +1,29 @@
+@startuml
+
+skinparam monochrome true
+'skinparam style strictuml
+'skinparam handwritten true
+'skinparam linetype polyline
+
+object "Program " as program
+object "Job " as job
+object "Task " as task
+object "Routine " as routine
+object "Resource " as resource
+object "FormalParameter " as formalparameter
+object "DataType " as datatype
+object "Executable " as executable
+
+program - "n" job : "has    "
+job - "n" task : "has   "
+task - "1" routine : "associated    "
+task -- "  n" resource : "actual in/out"
+routine -- "n" formalparameter : "described by\n(in/out)         "
+resource -- "1  " datatype
+formalparameter -- "1" datatype
+routine - "n" executable : "contains of   "
+job - "0..2  " routine : "\nreduce?\nmap?"
+job -- "0..1    " resource : "reduced  \nresult    "
+program -- "n" resource : "shared     \nresources "
+
+@enduml
