@@ -155,10 +155,10 @@ ReduceRoutine
 Unfortunately the Routine-API supports at the moment no ReduceRoutines.
 
 
-.. _client-routine-csharp:
-
-ClientRoutine
-=============
-
-TODO
+.. .. _client-routine-csharp:
+..
+.. ClientRoutine
+.. =============
+..
+.. TODO
 

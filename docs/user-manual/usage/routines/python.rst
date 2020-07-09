@@ -101,9 +101,9 @@ ReduceRoutine
 Unfortunately the Routine-API supports at the moment only :ref:`Objective Routines <objective-routine-python>`.
 
 
-.. _client-routine-python:
-
-ClientRoutine
-=============
-
-Unfortunately the Routine-API supports at the moment only :ref:`Objective Routines <objective-routine-python>`.
+.. .. _client-routine-python:
+..
+.. ClientRoutine
+.. =============
+..
+.. Unfortunately the Routine-API supports at the moment only :ref:`Objective Routines <objective-routine-python>`.

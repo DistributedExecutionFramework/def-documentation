@@ -1,204 +1,181 @@
-=============================
-Software Architecture
-=============================
+.. _architecture:
+
+==========================
+Architecture & Components
+==========================
 
 General
 ========
 
 Prototype 2 is a multi-project software with many sub-projects, which are organized with the build tool `Gradle <www.gradle.org>`_.
 
-High level view
-=================
 
-.. image:: img/high-level.png
-    :width: 400px
+High-level Architecture
+========================
+
+.. image:: img/def-highlevel-components.png
+    :width: 600px
     :align: center
 
-DEF Module
------------
+Manager
+-------
 
-Central component of DEF. DEF Module consists of **manager**, **library** (master), **cloud-communcation** and **manager-webapp**. DEF Module act as entry point for every client (DEF Client or Browser) and delegate incoming requests to a cluster if necessary. The web interface provides a personal view to DEF: Own *Programs*, *Jobs*, *Tasks* and *Routines*. Additional runtime information about DEF Cluster and DEF Worker are provided.
-
-
-DEF ClusterModule
-------------------
-
-The DEF ClusterModule consists of **cluster**, **scheduler**, **library** (slave) and **cloud-communcation**. DEF ClusterModule manages a number of DEF Workers and Reducers and delegate the "real" worker in form of *Tasks* to them. All of execution logic how a *Program*, *Job* and *Task* were processed is implemented in this DEF ClusterModule.
+The *Manager* is the entry point for all client calls and is responsible for holding delegating the calls to the appropriate
+*Cluster*. Furthermore, it holds the library with all routines.
 
 
-DEF LoadBalancer
------------------
+Cluster
+-------
 
-An optional module, which monitors all workers of a cluster and balance the work (*Tasks*) between them.
-
-
-DEF Worker
------------
-
-DEF Worker create a Routine Sequence from each assigned *Task* and run this sequence (see TODO). Routine implementation will be fetched from local DEF Library instance.
+The *Cluster* manages a number of *Nodes* and distributes all incoming calls among them. It holds all *Programs* with
+their associated *Jobs* and *Tasks*.
 
 
-DEF Reducer
-------------
+Node
+-----
 
-DEF Reducer is very similar to DEF Worker, but instead of running *ObjectiveRoutines*, *ReduceRoutines* will be executed.
+The *Nodes* are the parts of the DEF that do the actual work. The different types of *Nodes* that are available are
+*Workers* and *Reducers*.
 
 
-DEF Library
-------------
+Worker
+^^^^^^^
 
-A library which provides Routine metadata and Routine executables. DEF Library instances are hierarchically organized: Slave libraries fetch missing information from a other slave library or master library.
+The *Workers* hold the different execution environments for the supported programming languages. On the *Workers* the *Tasks*
+with their routines are actually executed.
+
+
+Reducer
+^^^^^^^^
+
+The *Reducers* are responsible for reducing all *Task* results that belong to one *Job* to a single result.
+*Reducers* are optional parts of the DEF setup and are as well optional to use in each *Job*.
+
+
+.. Client-Routine Worker
+.. ^^^^^^^^^^^^^^^^^^^^^^
+..
+.. The *Client-Routine Workers* allow the execution of code that is typically executed on the client side. For futher information
+.. see :ref:`client-routine`.
 
 
 Components
-============
+===========
 
-A more detailed view with all (sub)components can be found here:
-
-.. image:: img/high-level-components.png
+.. image:: img/def-components.png
     :width: 400px
     :align: center
 
+Client Components
+------------------
 
-Service-Interfaces
-=====================
+Client-API
+^^^^^^^^^^^
 
-The following picture shows all services the DEF offers. For each service the uses internally three different interfaces:
+For each programming language supported a Client-API is provided which can be used for making calls to the DEF.
+For further information on how to create a DEF client see :ref:`client-dev`.
 
-    * a **request interface**: queues all request and returns a ticket id
-    * a **response interface**: for fetching the results
-    * a **ticket service interface**: for fetching the current state of a ticket
+Web-Manager
+^^^^^^^^^^^^
 
-.. image:: img/service-interfaces.png
-    :width: 400px
-    :align: center
-
-
-The services are defined through Thrift files:
-
-ExecLogicService
------------------
-
-Represents the whole execution logic from the user's point of view.
-
-.. literalinclude:: src/ExecLogicService.thrift
-    :linenos:
-    :language: thrift
+The *Web-Manager* is a web application that can be used for monitoring ongoing *Programs*, *Jobs* and *Tasks*,
+for finding an uploading *Routines* and *DataTypes* and for monitoring the infrastructure that belongs to a *Manager*.
 
 
-ManagerService
----------------
+System Components
+------------------
 
-Represents the *Cluster* management.
+Manager Components
+^^^^^^^^^^^^^^^^^^^^
 
-.. literalinclude:: src/ManagerService.thrift
-    :linenos:
-    :language: thrift
+Manager
+''''''''
 
-
-ClusterService
----------------
-
-Represents the *Node* management of a cluster.
-
-.. literalinclude:: src/ClusterService.thrift
-    :linenos:
-    :language: thrift
+The Manager component is the entry point for all calls from the Client-APIs and the Manager-Webservice component.
+It is responsible for delegating the calls to the appropriate Cluster and giving information about its related Clusters.
 
 
-SchedulerService
------------------
+Manager-Webservice
+'''''''''''''''''''
 
-Represents the scheduler functionality for *Tasks* and *ReduceJobs*.
+The Manager-Webservice is the entry point for all calls from the *Web-Manager*. It delegates the calls to the Manager and
+processes the incoming and outgoing data so the *Web-Manager* can work with them.
 
-.. literalinclude:: src/SchedulerService.thrift
-    :linenos:
-    :language: thrift
+Library
+''''''''
 
-
-LibraryService
----------------
-
-Represents the library functionality: search, downloading of *Routines*, *DataTypes*, etc.
-
-.. literalinclude:: src/LibraryService.thrift
-    :linenos:
-    :language: thrift
+The Library that lies with the *Manager* is the master library that holds all the *Routines* and *Datatypes* that were created.
+The other libraries are fetching the data they use and don't have from the master library.
 
 
-LibraryAdminService
---------------------
+Cluster Components
+^^^^^^^^^^^^^^^^^^^^
 
-Extends the library functionality on creating and deleting of *Routines*, *DataTypes*, etc.
+Cluster
+''''''''
 
-.. literalinclude:: src/LibraryAdminService.thrift
-    :linenos:
-    :language: thrift
-
-
-WorkerService
---------------
-
-Represents a specialisation of the *Node* and is responsible for executing the assigned *Tasks*.
-
-.. literalinclude:: src/WorkerService.thrift
-    :linenos:
-    :language: thrift
+The Cluster component is responsible for managing a number of different *Node* components that are associated with it.
+It delegates all incoming calls from the Manager component to the Scheduler which then distributes all of them among the Node
+components. The Cluster component holds all the *Programs*, *Jobs* and *Tasks* as well as the execution logic an how they
+are processed.
 
 
-ReducerService
----------------
+Scheduler
+'''''''''''
 
-Represents a specialisation of the *Node* and is responsible for reducing the *Task* results of a *Job*.
-
-.. literalinclude:: src/ReducerService.thrift
-    :linenos:
-    :language: thrift
+The Scheduler component gets all the *Tasks* and *ReduceJobs* and distributes them to its corresponding Node components.
 
 
-NodeObserverService
---------------------
+LoadBalancer
+''''''''''''''
 
-Observer interface of a *Node*.
+An optional component which monitors all Nodes of a Cluster and balances the work (*Tasks*) between them.
 
-.. literalinclude:: src/NodeObserverService.thrift
-    :linenos:
-    :language: thrift
+Library
+''''''''
 
-
-TicketService
---------------
-
-.. literalinclude:: src/TicketService.thrift
-    :linenos:
-    :language: thrift
+The library that lies with the *Cluster* is a slave library that is responsible for caching routines that are used by
+its *Nodes*. If it doesn't hold the data that is needed from its *Nodes* it fetches them from the master library and passes
+them to back to the *Nodes*.
 
 
-The data types used in the interfaces are defined in the following files.
+Node Components
+^^^^^^^^^^^^^^^^
 
-.. literalinclude:: src/DTOs.thrift
-    :linenos:
-    :language: thrift
+Worker
+'''''''
 
-.. literalinclude:: src/CommunicationDTOs.thrift
-    :linenos:
-    :language: thrift
-
-Thrift documentations
-
-    * `Thrift Tutorial <https://thrift-tutorial.readthedocs.io/en/latest/index.html>`_
-    * `Thrift: The Missing Guide <https://diwakergupta.github.io/thrift-missing-guide/>`_
+The Worker components execute all the *Tasks* they get from the Scheduler, so they are running the *ObjectiveRoutines*
+and pass back the results to the Cluster afterwards.
 
 
-.. _packages:
+Reducer
+''''''''
+
+The Reducer components are very similar to the Worker components, but instead of *ObjectiveRoutines* *ReduceRoutines*
+are executed.
+
+
+.. Client-Routine Worker
+.. '''''''''''''''''''''''
+..
+.. The Client-Routine Worker components can execute *ClientRoutines*.
+
+
+Library
+''''''''
+
+The Library that lies with the Node components is a slave library the Node components use to fetch the *Routines* they
+have to execute. If a *Routine* isn't available in the library, then the data is fetched from the *Cluster's* library.
+
 
 Packages (Sub-Projects)
 ==========================
 
-Overview and a short description of all packages (sub-project or modules) of Prototype 2:
+Overview and a short description of all packages (sub-project or modules):
 
 .. image:: img/packages.png
-    :width: 400px
+    :width: 1000px
     :align: center
 
 
@@ -271,7 +248,7 @@ Provides base service communication capabilities: RESTful, `Thrift <http://thrif
 communication-api
 ------------------
 
-Base interfaces and implementation for communication between DEF components. Every **-api* package, which provides a service interface and client needs this package. This package also includes *TicketService* interface and client.
+Base interfaces and implementation for communication between DEF components. Every **-api** package, which provides a service interface and client needs this package. This package also includes *TicketService* interface and client.
 
 
 configuration
@@ -424,8 +401,9 @@ worker-api
 Service interface and client for *worker*.
 
 
-Node
-======
+
+Node Architecture
+===================
 
 Abstract implementation of Worker and Reducer.
 
@@ -441,7 +419,7 @@ Every *Task* will be transformed to a *Task-Sequence* before executing. A *Seque
     :language: thrift
 
 .. image:: img/task-sequence.png
-    :width: 800px
+    :width: 1000px
     :align: center
 
 A normal *Task* will split up into following *Sequence-Steps*:

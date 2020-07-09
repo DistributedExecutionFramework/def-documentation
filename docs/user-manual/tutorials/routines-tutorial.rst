@@ -1524,4 +1524,3 @@ Additional DEF features
 The DEF offers some more features which weren't mentioned within this tutorial yet.
 
 * Shared Resources (see :ref:`shared-resources`)
-* Client Routine (see :ref:`client-routine`)

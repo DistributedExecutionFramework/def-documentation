@@ -6,4 +6,5 @@ Developer Documentation
     :maxdepth: 2
     :caption: Contents:
 
-    design/design
+    architecture-components
+    services-interfaces

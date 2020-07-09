@@ -199,9 +199,9 @@ The key will be provided/created by the MapRoutine.
     }
 
 
-.. _client-routine-java::
-
-ClientRoutine
-=============
-
-TODO
+.. .. _client-routine-java::
+..
+.. ClientRoutine
+.. =============
+..
+.. TODO

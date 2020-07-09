@@ -57,9 +57,9 @@ ReduceRoutine
 
 Unfortunately the Routine-API supports at the moment only :ref:`Objective Routines <objective-routine-matlab>`.
 
-.. client-routine-matlab::
-
-ClientRoutine
-=============
-
-TODO
+.. .. _client-routine-matlab::
+..
+.. ClientRoutine
+.. =============
+..
+.. TODO
