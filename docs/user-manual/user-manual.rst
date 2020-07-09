@@ -11,6 +11,6 @@ Please read first the :ref:`concepts` part before continue with the user manual.
    getting-started/getting-started
    usage/usage
    examples/examples
-   tools/toolsg
+   tools/tools
    tutorials/tutorials
 
