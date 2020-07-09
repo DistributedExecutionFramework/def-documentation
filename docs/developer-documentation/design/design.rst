@@ -9,5 +9,4 @@ In this section
     :caption: Contents:
 
     software-architecture
-    runtime
     apis
