@@ -4,7 +4,7 @@
 FHV Environment
 =================
 
-A DEF instance is maintained at the FHV. Following the connection data is listed.
+A DEF instance is maintained at the FHV. It is only possible to connect to this instance within the FHV network. Following the connection data is listed.
 
 ================ ============= ======================================================
 Component        Name / Id     IP / URL

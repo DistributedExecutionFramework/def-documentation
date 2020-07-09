@@ -2,6 +2,8 @@
 Factory Simulation & Optimization
 =================================
 
+For a detailed tutorial on how to implement this example on the DEF see :ref:`tutorial_factory`.
+
 In this example a factory with :math:`m` identical machines will be optimized in terms of profitability.
 This example consists of two main parts:
 

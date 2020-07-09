@@ -4,7 +4,7 @@
 Components
 ==========
 
-As the name states the DEF is a distributed framework with many different components. The image below shows all the components of the DEF in a simplified manner.
+As the name states the DEF is a distributed framework and execution environment with many different components. The image below shows all the components of the DEF in a simplified manner.
 
 .. image:: img/components-simplified.png
     :align: center

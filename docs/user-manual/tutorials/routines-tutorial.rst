@@ -2,6 +2,8 @@
 .. role::  raw-html(raw)
     :format: html
 
+.. _tutorial_factory:
+
 ======================
 DEF-Tutorial: Routines
 ======================
@@ -22,10 +24,10 @@ This tutorial isn't intended to show the whole functionality the DEF offers, but
 * Developing an optimisation for the given problem in Java
 
 
-Josef Ressel Centre for Applied Scientific Computing
-=====================================================
+About
+======
 
-TODO :ref:`jrz`
+The DEF has been developed at the :ref:`jrz` at the `University of Applied Sciences Vorarlberg <https://www.fhv.at/en/>`_.
 
 
 .. _def:
@@ -36,24 +38,31 @@ Distributed Execution Framework (DEF)
 Motivation
 -----------
 
-TODO :ref:`def-motivations`
+There have been two main motivations for developing and using the DEF, namely the reusability of algorithms independent
+of programming languages and runtime environments, and the parallel and distributed execution of computational problems.
+
+For more information read the chapter :ref:`def-motivations`.
 
 Domain & Terminology
 ----------------------
 
-TODO :ref:`def-domain`
+The problems that can be computed on the DEF have to be embarrassingly parallel and be put in a specific structure.
+
+For more information read the chapter :ref:`def-domain`.
 
 
 DEF Components
 --------------
 
-TODO :ref:`components`
+As the name states the DEF is a distributed system with many different components.
+
+For more information read the chapter :ref:`components`.
 
 
 FHV Environment
 ---------------
 
-TODO :ref:`fhv-env`
+A DEF instance is maintained at the FHV. You can find the connection data in :ref:`fhv-env`.
 
 
 Factory Simulation & Optimisation
@@ -531,12 +540,10 @@ To bring the factory simulation into the DEF there are several steps necessary w
 Data types
 ^^^^^^^^^^
 
-TODO :ref:`data-type`
+The DEF data types are used for the communication between the different components and across programming languages.
+It is necessary to create data types for all the input and output data of the routine. For more information on data types see :ref:`data-type`.
 
-
-
-
-The data types of the above defined parameters are the following.
+The data types for the above defined parameters are the following.
 
 =================== =============
 Parameter           Data Type
@@ -632,7 +639,7 @@ The downloaded zip file has to be decompressed and the contained file ``ttypes.p
 Routine Step 3: Downloading the corresponding *Objective Routine* template
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
-As the factory simulation is written in Python the :download:`Python Routine Template <../resources/python-routine_template.zip>` can be used for creating the *Objective Routine*.
+As the factory simulation is written in Python the :download:`Python Routine Template <../resources/python_routine_template.zip>` can be used for creating the *Objective Routine*.
 
 After downloading it the file has to be unzipped and the project directory can be renamed to a more accurate title like *factory_simulation-routine*. The following files are contained in the project.
 
@@ -808,14 +815,14 @@ The previously created routine binary can now be uploaded into the DEF Library. 
 
 To upload a new routine the *Add routine* button has to be clicked which opens the following form.
 
-.. image:: img/web_manager-new-routine.png
+.. image:: img/web_manager-new_routine.png
     :width: 1000px
     :align: center
 
 This form has to be filled with the following values.
 
 * *Name*: FactorySimulation
-* *Description*: TODO
+* *Description*: The profit of a factory with m identical machines and r repair men is optimized. Each machine and repair man has a given cost. A predefined budget is given which must not be exceeded.
 * *Type*: Objective
 * *Language*: Python >3.6
 * *Extensions*: [none]
@@ -823,26 +830,26 @@ This form has to be filled with the following values.
 * *Private*: [not toggled]
 * *Input Parameters*:
 
-    =============== =============== =================
-    Name            Description     Data Type
-    =============== =============== =================
-    m               TODO            DEFInteger
-    r               TODO            DEFInteger
-    ptMean          TODO            DEFDouble
-    ptSigma         TODO            DEFDouble
-    mttf            TODO            DEFDouble
-    repairTime      TODO            DEFDouble
-    jobDuration     TODO            DEFDouble
-    weeks           TODO            DEFInteger
-    =============== =============== =================
+    =============== ================================================================== =================
+    Name            Description                                                         Data Type
+    =============== ================================================================== =================
+    m               Number of machines                                                  DEFInteger
+    r               Number of repair men                                                DEFInteger
+    ptMean          Process time of a single part - normally distributed, mean part     DEFDouble
+    ptSigma         Process time of a single part - normally distributed, sigma part    DEFDouble
+    mttf            Mean time to fail (crash of machine)                                DEFDouble
+    repairTime      Repair time of a machine                                            DEFDouble
+    jobDuration     Duration of other jobs in minutes                                   DEFDouble
+    weeks           Simulation duration                                                 DEFInteger
+    =============== ================================================================== =================
 
 * *Output Parameter*:
 
-    =============== =============== ========================
-    Name            Description     Data Type
-    =============== =============== ========================
-    result          TODO            FactorySimulationResult
-    =============== =============== ========================
+    =============== ================================================================== ========================
+    Name            Description                                                         Data Type
+    =============== ================================================================== ========================
+    result          For every machine: number of produced parts and fails/crashes       FactorySimulationResult
+    =============== ================================================================== ========================
 
 * *Binaries*: [search the previously created ``routine_binary.pyz`` and select it]
 
@@ -855,82 +862,44 @@ Client in Java
 To check the correct functionality of the previous created and uploaded :ref:`objective-routine` **FactorySimulation** a sample :ref:`Client <client>` in Java will be created.
 This :ref:`Client <client>` will call the :ref:`objective-routine` **FactorySimulation** a few times with the noted parameter set before. (see :ref:`tutorial-parameters`)
 
-Steps to create the a :ref:`Client <client>`:
+For the detailed description on how to create a DEF client in Java see :ref:`clients-java`. There the following steps are described:
 
-#. Create a empty Java project with Client-API
-#. Copy example client code from *Web-Manager*
-#. Generate and download all necessary :ref:`DataTypes <datatypes>`:
-#. Update DEF connection data
-#. Update number of :ref:`Jobs <job>` and :ref:`Tasks <task>`
+#. Create an empty Java project with the Client-API
+#. Copy the example client code from the Web-Manager into the project
+#. Generate and download all necessary DataTypes
+#. Update the DEF connection data
+#. Update Job and Task loops
 #. Adapt input parameter values
-#. Fetch and analyse the results of the simulation
+#. Fetch and analyse the results
 #. Playing around with the client
 
 
-Client step 1: Create a Java project
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Client step 1: Create an empty Java project with the Client-API
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-As a first step an empty Java project with the name **FactorySimulationClient** should be created in your favorite IDE (`IntelliJ IDEA <https://www.jetbrains.com/idea/?fromMenu>`_ is used in this Tutorial).
-To use the DEF from Java the Client-API must be added to the new created project:
-
-#. Download Client-API from *Web-Manager* under *Resources*. (See :ref:`fhv-env`, Filename: ``client-api-<version>-all.jar``)
-#. Place the downloaded file to the project root.
-#. In IntelliJ IDEA right click to the project and choose *Open Module Settings* (*F4*).
-#. Switch to *Libraries* and add ``client-api-<version>-all.jar``. (see image below)
-
-.. image:: img/client-add-library.png
-    :width: 1000px
-    :align: center
+An empty Java project has to be created using your favourite IDE and the Client-API has to be imported as described in
+:ref:`clients-java_step1`.
 
 
 Client step 2: Copy client example code
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-For every supported language and :ref:`objective-routine` combination the *Web-Manager* provides an example client code.
-
-Navigate to previous created :ref:`objective-routine`: *Library* :raw-html:`&rarr;` *Routines* :raw-html:`&rarr;` **FactorySimulation**.
-
-Under *Usage* section, change the language to ``Java`` and copy the displayed code to the clipboard.
-
-Create a new Java class ``Example.java`` direct under ``src`` directory of the project and paste the code from clipboard. (see image below)
-
-.. image:: img/client-example-class.png
-    :width: 1000px
-    :align: center
+The second step is to copy the example code for the **FactorySimulation** routine from the Web-Manager and include it into
+the newly created project as described in :ref:`clients-java_step2`.
 
 
-Client step 3: Generate and download :ref:`DataTypes <datatypes>`
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Client step 3: Generate and download :ref:`DataTypes <data-types-detail>`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-All in- and out parameter classes can not be referenced in the new ``Example.java``. The *Web-Manager* provides also all necessary :ref:`DataTypes <datatypes>` for a language and :ref:`objective-routine` combination.
-
-Navigate again to previous created :ref:`objective-routine`: *Library* :raw-html:`&rarr;` *Routines* :raw-html:`&rarr;` **FactorySimulation**.
-
-Under *Usage* section, change the language to ``Java`` and press the Button *Generate Data types & download*.
-
-Decompress the downloaded zip file ``Java_dataTypes.zip`` and copy all included ``*java`` Files to the ``src`` directory of the project.
-
-All missing references should be fixed.
+The necessary data types can be downloaded from the Web-Manager as well and need to be integrated into the previously created
+project as described in :ref:`clients-java_step3`.
 
 
 Client step 4: Update DEF connection data
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-There a few points in the example code which should be completed and updated. One point/part are the connection data:
-
-.. code-block:: java
-    :linenos:
-    :lineno-start: 19
-
-    // Create client
-    ServiceEndpointDTO managerEndpoint = new ServiceEndpointDTO("<replace with manager address>", 40002, Protocol.THRIFT_TCP);
-    IDEFClient defClient = DEFClientFactory.createClient(managerEndpoint);
-
-    // Create program
-    Future<String> fPId = defClient.createProgram("<replace with cluster id>", "<replace with user id>");
-    String pId = fPId.get();
-
-Replace the fields with data for this workshop / :ref:`fhv-env`:
+The connection data needs to be set according to the used DEF instance as described in :ref:`clients-java_step4`. For this example the following
+data needs to be set:
 
 .. code-block:: java
     :linenos:
@@ -948,35 +917,14 @@ Replace the fields with data for this workshop / :ref:`fhv-env`:
 Client step 5: Update number of :ref:`Jobs <job>` and :ref:`Tasks <task>`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-For the first functionality test at least one :ref:`job` and :ref:`task` should be created. Therefore the both ``while`` loops should be replaced with two ``for`` loops:
-
-.. code-block:: java
-    :linenos:
-    :lineno-start: 27
-
-    for (int j = 0; j < 1; j++) { // create only one job
-        // Create Job.
-        Future<String> fJId = defClient.createJob(pId);
-        String jId = fJId.get();
-        for (int t = 0; t < 1; t++) { // create only one task
-            RoutineInstanceDTO routine = new RoutineInstanceBuilder("<FactorySimulation routine id>")
-                    .addParameter("repairTime", new DEFDouble(/* value */))
-                    .addParameter("weeks", new DEFInteger(/* value */))
-                    .addParameter("mttf", new DEFDouble(/* value */))
-                    .addParameter("m", new DEFInteger(/* value */))
-                    .addParameter("r", new DEFInteger(/* value */))
-                    .addParameter("ptSigma", new DEFDouble(/* value */))
-                    .addParameter("ptMean", new DEFDouble(/* value */))
-                    .build();
-            defClient.createTask(pId, jId, routine);
-        }
-        // ..
+The loops need to be completed by defining abortion criteria as described in :ref:`clients-java_step5`.
 
 
 Client step 6: Adapt input parameter values
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-In the next step the input parameters for the simulation will be replaced with the previously noted ones: (see :ref:`tutorial-parameters`)
+The input parameters for the routine have to be filled with actual data. In this case the values are used that were
+previously noted (see :ref:`tutorial-parameters`).
 
 .. code-block:: java
     :linenos:
@@ -1004,24 +952,8 @@ In the next step the input parameters for the simulation will be replaced with t
 Client step 7: Fetch and analyse the results
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Print the simulation result to the ``stdout`` is the easiest to proof the result. The values should be in the same range as noted before. (TODO: reference)
-The result is attached to the :ref:`task` object and can directly printed:
-
-.. code-block:: java
-    :linenos:
-    :lineno-start: 47
-
-    // Fetch all tasks and results.
-    List<String> tIds = defClient.getAllTasksWithState(pId, jId, ExecutionState.SUCCESS, SortingCriterion.NO_SORTING).get();
-    for (String tId : tIds) {
-        TaskDTO task = defClient.getTask(pId, jId, tId).get();
-        FactorySimulationResult result = defClient.extractOutParameter(task, FactorySimulationResult.class);
-        // Process task result.
-        System.out.println(result);
-    }
-
-
-Finally the ``Example.java`` class should look like the following and should also be runnable (no errors, no missing references, etc.).
+Finally the results need to be fetched and analysed / processed as described in :ref:`clients-java_step7`.
+This leads to this resulting overall code:
 
 .. literalinclude:: Example.java
     :linenos:
@@ -1054,15 +986,7 @@ If both lines which deletes the created :ref:`job` and :ref:`program` are commen
     defClient.markProgramAsFinished(pId);
     //defClient.deleteProgram(pId); // Optional: Delete all resources
 
-It's also possible to separate the client into two parts: (1) create :ref:`Jobs <job>` and :ref:`Tasks <task>`, (3) fetch and evaluate results.
-
-.. literalinclude:: ExamplePart1.java
-    :linenos:
-    :language: java
-
-.. literalinclude:: ExamplePart2.java
-    :linenos:
-    :language: java
+It's also possible to separate the client into two parts as described in :ref:`clients-java_two-parts`.
 
 
 .. _reduce-routine-java:
@@ -1599,57 +1523,5 @@ Additional DEF features
 
 The DEF offers some more features which weren't mentioned within this tutorial yet.
 
-* Shared Resources
-* Client Routine
-
-Shared Resources
------------------
-
-It might occur that the input parameters for a task are quite large. If more tasks of a program need the same input parameters this leads to huge data traffic between the client and the DEF components. To counteract this problem it is possible to create a shared resource.
-
-A shared resource is attached to the program and is distributed to all workers directly and only once. When creating a task it can be specified that a shared resource is used as an input parameter. If a shared resource is used the data isn't attached to the task and sent over the network to the DEF but rather fetched from the workers directly which already hold the shared resources.
-
-A shared resource can be created in Java as follows.
-
-.. code-block:: java
-    :linenos:
-
-    // Create a shared resource
-    DEFDouble sharedResource = new DEFDouble(1e-9);
-    String rId = execClient.createSharedResource(
-            pId,
-            sharedResource.get_id(),
-            ByteBuffer.wrap(new TSerializer().serialize(sharedResource))
-    ).get();
-
-    // Prepare routine
-    RoutineInstanceDTO routine = new RoutineInstanceBuilder("<Routine id>")
-            .addParameter("resource", rId)
-            .build();
-
-Client Routine
------------------
-
-Another concept for decreasing the data traffic between the client and the DEF components is the Client Routine. A Client Routine is another routine type and enables the users to transfer most of their client code into the DEF where it will be executed rather than on the client side. On the client side it is only necessary to create a program, build and transfer the Client Routine to the DEF and to fetch the results afterwards.
-
-Using a Client Routine makes sense if many tasks and jobs are computed but the user is only interested in a few results. Without a Client Routine many data is transferred between the DEF and the client during the execution of a program. If a Client Routine is used the data stays within the DEF and only the data that is relevant for the user is transferred back to the client.
-
-
-Outlook
-=========
-
-There are still some open issues which are scheduled for development until the project will be finished.
-
-    * Completion Scheduler & LoadBalancer
-    * Completion Cloud support
-    * Further PSE support
-    * Parameter server (centralised)
-
-        * Readable / Writable shared resources
-        * Random numbers
-
-Additionally there are some further goals.
-
-    * Usage by other research groups within the FHV
-    * OpenSource publication
-
+* Shared Resources (see :ref:`shared-resources`)
+* Client Routine (see :ref:`client-routine`)

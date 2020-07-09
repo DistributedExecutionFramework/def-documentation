@@ -67,12 +67,18 @@ A StoreRoutine is a DEF-internal routine and defines the storage of :ref:`Resour
 
 .. _client-routine:
 
-ClientRoutine
--------------
 
-A ClientRoutine is actually :ref:`client` code running directly in the :ref:`cluster`.
-If the Client needs a lot of communication with the DEF (:ref:`manager`), because of short running :ref:`Tasks <task>` and small :ref:`Jobs <job>`,
-or the connection to the :ref:`cluster` component is slow, running a Client code as a ClientRoutine will be preferred.
+Client Routine
+===============
 
+A Client Routine enables the users to transfer most of their client code into the DEF where it will be executed rather
+than on the client side. So a ClientRoutine is actually :ref:`client` code running directly in the :ref:`cluster`.
+On the client side it is only necessary to create a program, build and transfer the Client Routine to the DEF and to
+fetch the results afterwards.
 
+Using a Client Routine makes sense if many tasks and jobs are computed but the user is only interested in a few results.
+Without a Client Routine many data is transferred between the DEF and the client during the execution of a program. If a
+Client Routine is used the data stays within the DEF and only the data that is relevant for the user is transferred back
+to the client.
 
+TODO

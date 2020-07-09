@@ -199,7 +199,7 @@ The key will be provided/created by the MapRoutine.
     }
 
 
-.. client-routine-java::
+.. _client-routine-java::
 
 ClientRoutine
 =============

@@ -15,3 +15,4 @@ This chapter covers all the basic concepts of the DEF and should be the starting
    components
    datatypes
    routines
+   shared-resources

@@ -5,7 +5,7 @@ Usage
 =====
 
 This sections covers the development of :ref:`Routines <routines-detail>` in different languages by using the provided DEF API,
-creating :ref:`datatypes-detail` and how to develop a :ref:`client` in different languages.
+creating :ref:`data-types-detail` and how to develop a :ref:`client` in different languages.
 
 .. toctree::
    :maxdepth: 3
@@ -13,4 +13,4 @@ creating :ref:`datatypes-detail` and how to develop a :ref:`client` in different
 
    routines/routines
    datatype
-   client
+   clients/client
