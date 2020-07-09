@@ -1,0 +1,7 @@
+# Add any directories, files, or patterns you don't want to be tracked by version control
+
+**/_build
+**/_static
+**/_templates
+**/.idea
+**/.DS_Store
