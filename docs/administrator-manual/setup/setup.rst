@@ -6,4 +6,4 @@ Setup
 
    installation
    maintenance
-   fhv-environment
+   environment

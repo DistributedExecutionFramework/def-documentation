@@ -58,6 +58,7 @@ The *Reducers* are responsible for reducing all *Task* results that belong to on
 .. The *Client-Routine Workers* allow the execution of code that is typically executed on the client side. For futher information
 .. see :ref:`client-routine`.
 
+.. _architecture_components:
 
 Components
 ===========
@@ -449,11 +450,11 @@ The _MapRoutine_ receive the result (Apache Thrift ``struct``) from *ObjectRouti
 
 After mapping *ObjectiveRoutine* result to a key-value set, this key-value set will be stored in following format to pipe **in_2**:
 
-1. Count of key-value tuples as Apache Thrift ``i32``,
-1. For every key-value tuple
-    1. Key as Apache Thrift ``str``,
-    1. Size of value in bytes as Apache Thrift ``i32``,
-    1. Value (Apache Thrift ``struct``) itself.
+#. Count of key-value tuples as Apache Thrift ``i32``,
+#. For every key-value tuple
+    #. Key as Apache Thrift ``str``,
+    #. Size of value in bytes as Apache Thrift ``i32``,
+    #. Value (Apache Thrift ``struct``) itself.
 
 In addition the ``Order(ROUTINE_DONE, "")`` will be send to Node via **ctrl_1**.
 
